@@ -503,6 +503,39 @@
             color: var(--gray);
         }
 
+        /* OTP Styles */
+        .otp-section {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: var(--radius);
+            border: 1px solid #e9ecef;
+        }
+
+        .otp-input {
+            width: 100%;
+            padding: 12px;
+            font-size: 1.2rem;
+            text-align: center;
+            letter-spacing: 8px;
+            border: 2px solid #ddd;
+            border-radius: var(--radius);
+            margin-bottom: 10px;
+        }
+
+        .otp-input:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+
+        .otp-info {
+            text-align: center;
+            color: var(--gray);
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+
         /* Receipt Styles */
         .receipt {
             background: white;
@@ -982,7 +1015,19 @@
                     <input type="password" id="login-password" class="form-control" placeholder="أدخل كلمة المرور">
                 </div>
                 
-                <button type="submit" class="btn btn-primary" style="width: 100%;">تسجيل الدخول</button>
+                <!-- قسم OTP -->
+                <div class="otp-section" id="otp-section">
+                    <div class="otp-info">
+                        <i class="fas fa-shield-alt"></i>
+                        تم إرسال رمز التحقق إلى هاتفك
+                    </div>
+                    <input type="text" id="login-otp" class="otp-input" placeholder="أدخل رمز التحقق" maxlength="4">
+                    <div class="otp-info">
+                        الرمز مكون من 4 أرقام
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn btn-primary" style="width: 100%;" id="login-submit-btn">تسجيل الدخول</button>
             </form>
         </div>
     </div>
@@ -1159,10 +1204,11 @@
             }
         };
 
-        // Login Credentials (hidden from users)
+        // بيانات الدخول المخفية
         const LOGIN_CREDENTIALS = {
             username: "حسن",
-            password: "00"
+            password: "00",
+            otp: "3377" // الرمز السري للتحقق
         };
 
         // DOM Elements
@@ -1202,9 +1248,17 @@
         const newCategoryInput = document.getElementById('new-category');
         const addCategoryBtn = document.getElementById('add-category-btn');
         const categoriesList = document.getElementById('categories-list');
+        const otpSection = document.getElementById('otp-section');
+        const loginOtpInput = document.getElementById('login-otp');
+        const loginSubmitBtn = document.getElementById('login-submit-btn');
 
         // Initialize App
         document.addEventListener('DOMContentLoaded', function() {
+            // إعادة تعيين حالة المستخدم عند تحميل الصفحة
+            currentUser = null;
+            loginBtn.textContent = 'تسجيل الدخول';
+            adminLink.style.display = 'none';
+
             // Set up event listeners
             setupEventListeners();
             
@@ -1233,21 +1287,26 @@
             // Login button
             loginBtn.addEventListener('click', () => {
                 if (currentUser) {
-                    // Logout
-                    auth.signOut();
-                    currentUser = null;
-                    loginBtn.textContent = 'تسجيل الدخول';
-                    adminLink.style.display = 'none';
-                    showPage('menu');
+                    // تسجيل الخروج
+                    if (confirm('هل تريد تسجيل الخروج؟')) {
+                        currentUser = null;
+                        loginBtn.textContent = 'تسجيل الدخول';
+                        adminLink.style.display = 'none';
+                        showPage('menu');
+                        alert('تم تسجيل الخروج بنجاح.');
+                    }
                 } else {
-                    // Show login modal
+                    // إظهار نافذة الدخول
                     loginModal.classList.add('active');
+                    resetLoginForm();
+                    document.getElementById('login-username').focus();
                 }
             });
 
             // Close login modal
             closeLoginModal.addEventListener('click', () => {
                 loginModal.classList.remove('active');
+                resetLoginForm();
             });
 
             // Login form
@@ -1256,17 +1315,48 @@
                 const username = document.getElementById('login-username').value;
                 const password = document.getElementById('login-password').value;
                 
-                // Check credentials
+                // الخطوة الأولى: التحقق من اسم المستخدم وكلمة المرور
                 if (username === LOGIN_CREDENTIALS.username && password === LOGIN_CREDENTIALS.password) {
-                    // Successful login
-                    currentUser = { uid: 'admin', displayName: 'Admin' };
-                    loginModal.classList.remove('active');
-                    loginBtn.textContent = 'تسجيل الخروج';
-                    adminLink.style.display = 'block';
-                    showPage('admin');
-                    alert('تم تسجيل الدخول بنجاح!');
+                    // إذا كان قسم OTP غير ظاهر، نظهره
+                    if (otpSection.style.display === 'none' || otpSection.style.display === '') {
+                        otpSection.style.display = 'block';
+                        loginSubmitBtn.textContent = 'تحقق من الرمز';
+                        loginOtpInput.focus();
+                        return;
+                    }
+                    
+                    // الخطوة الثانية: التحقق من OTP
+                    const otp = loginOtpInput.value;
+                    if (otp === LOGIN_CREDENTIALS.otp) {
+                        // تسجيل الدخول الناجح
+                        handleSuccessfulLogin();
+                    } else {
+                        alert('رمز التحقق غير صحيح! الرجاء المحاولة مرة أخرى.');
+                        loginOtpInput.value = '';
+                        loginOtpInput.focus();
+                    }
                 } else {
                     alert('اسم المستخدم أو كلمة المرور غير صحيحة!');
+                    // إعادة تعيين الحقول
+                    document.getElementById('login-username').value = '';
+                    document.getElementById('login-password').value = '';
+                    otpSection.style.display = 'none';
+                    loginSubmitBtn.textContent = 'تسجيل الدخول';
+                }
+            });
+
+            // إدخال OTP - التحقق التلقائي عند اكتمال 4 أرقام
+            loginOtpInput.addEventListener('input', (e) => {
+                if (e.target.value.length === 4) {
+                    // التحقق التلقائي من OTP
+                    const otp = e.target.value;
+                    if (otp === LOGIN_CREDENTIALS.otp) {
+                        handleSuccessfulLogin();
+                    } else {
+                        alert('رمز التحقق غير صحيح!');
+                        e.target.value = '';
+                        e.target.focus();
+                    }
                 }
             });
 
@@ -1299,6 +1389,7 @@
             addItemBtn.addEventListener('click', () => {
                 if (!currentUser) {
                     alert('يجب تسجيل الدخول أولاً!');
+                    loginModal.classList.add('active');
                     return;
                 }
                 addItemModal.classList.add('active');
@@ -1377,12 +1468,58 @@
             });
         }
 
+        // دالة معالجة تسجيل الدخول الناجح
+        function handleSuccessfulLogin() {
+            currentUser = { 
+                uid: 'admin', 
+                displayName: 'حسن',
+                loginTime: new Date()
+            };
+            
+            loginModal.classList.remove('active');
+            loginBtn.textContent = 'تسجيل الخروج';
+            adminLink.style.display = 'block';
+            showPage('admin');
+            
+            // إظهار رسالة ترحيب
+            setTimeout(() => {
+                alert('مرحباً بك ' + currentUser.displayName + '! تم تسجيل الدخول بنجاح.');
+            }, 500);
+            
+            // إعادة تعيين النموذج
+            resetLoginForm();
+        }
+
+        // دالة إعادة تعيين نموذج الدخول
+        function resetLoginForm() {
+            document.getElementById('login-username').value = '';
+            document.getElementById('login-password').value = '';
+            loginOtpInput.value = '';
+            otpSection.style.display = 'none';
+            loginSubmitBtn.textContent = 'تسجيل الدخول';
+        }
+
         // Show Page
         function showPage(pageId) {
+            // إذا حاول المستخدم الوصول إلى صفحة الإدارة بدون تسجيل دخول
+            if (pageId === 'admin' && !currentUser) {
+                alert('يجب تسجيل الدخول للوصول إلى لوحة الإدارة');
+                loginModal.classList.add('active');
+                return;
+            }
+            
             pages.forEach(page => {
                 page.classList.remove('active');
                 if (page.id === pageId) {
                     page.classList.add('active');
+                }
+            });
+
+            // تحديث روابط التنقل النشطة
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('data-page') === pageId) {
+                    link.classList.add('active');
                 }
             });
         }
@@ -1451,6 +1588,9 @@
                 });
             });
         }
+
+        // باقي الدوال تبقى كما هي (filterMenuItems, renderMenuItems, renderAdminMenuItems, etc.)
+        // ... [جميع الدوال الأخرى تبقى كما هي بدون تغيير]
 
         // Filter Menu Items
         function filterMenuItems(category) {
