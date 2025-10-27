@@ -367,6 +367,7 @@
             display: flex;
             border-bottom: 1px solid #eee;
             margin-bottom: 20px;
+            flex-wrap: wrap;
         }
 
         .admin-tab {
@@ -648,6 +649,10 @@
                 flex-direction: column;
                 gap: 0;
             }
+            
+            .admin-tabs {
+                flex-direction: column;
+            }
         }
 
         /* Print Styles */
@@ -821,6 +826,206 @@
             background: var(--danger);
             color: white;
         }
+
+        /* Upload Status */
+        .upload-status {
+            margin-top: 10px;
+            padding: 8px;
+            border-radius: var(--radius);
+            text-align: center;
+            font-size: 0.9rem;
+        }
+        
+        .upload-status.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .upload-status.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .upload-status.loading {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        /* Kitchen Orders */
+        .kitchen-orders {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .kitchen-order {
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 20px;
+            border-left: 5px solid var(--warning);
+        }
+
+        .kitchen-order.ready {
+            border-left-color: var(--success);
+        }
+
+        .order-status {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-preparing {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .status-ready {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-completed {
+            background: #e2e3e5;
+            color: #383d41;
+        }
+
+        /* Employee Management */
+        .employees-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .employee-card {
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 20px;
+            text-align: center;
+        }
+
+        .employee-photo {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 0 auto 15px;
+            border: 3px solid var(--primary);
+        }
+
+        .employee-info {
+            margin-bottom: 15px;
+        }
+
+        .employee-name {
+            font-weight: 600;
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+        }
+
+        .employee-position {
+            color: var(--gray);
+            margin-bottom: 10px;
+        }
+
+        .employee-salary {
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 1.1rem;
+        }
+
+        /* Notification */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 1001;
+            transform: translateX(150%);
+            transition: transform 0.3s ease;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.success {
+            border-left: 4px solid var(--success);
+        }
+
+        .notification.warning {
+            border-left: 4px solid var(--warning);
+        }
+
+        .notification i {
+            font-size: 1.5rem;
+        }
+
+        .notification.success i {
+            color: var(--success);
+        }
+
+        .notification.warning i {
+            color: var(--warning);
+        }
+
+        /* Order History */
+        .order-history {
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .order-history-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .order-history-item:last-child {
+            border-bottom: none;
+        }
+
+        .order-history-info {
+            flex: 1;
+        }
+
+        .order-history-id {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .order-history-date {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        .order-history-total {
+            font-weight: 700;
+            color: var(--primary);
+        }
     </style>
 </head>
 <body>
@@ -837,6 +1042,7 @@
                         <li><a href="#" class="nav-link active" data-page="menu">القائمة</a></li>
                         <li><a href="#" class="nav-link" data-page="cart">سلة الطلبات</a></li>
                         <li><a href="#" class="nav-link" data-page="admin" id="admin-link">الإدارة</a></li>
+                        <li><a href="#" class="nav-link" data-page="kitchen" id="kitchen-link">المطبخ</a></li>
                         <li><a href="#" class="nav-link" data-page="reports">التقارير</a></li>
                     </ul>
                 </nav>
@@ -898,6 +1104,14 @@
                         <button class="checkout-btn" id="checkout-btn">إتمام الطلب وطباعة الفاتورة</button>
                     </div>
                 </div>
+
+                <!-- Order History -->
+                <div class="order-history" id="order-history" style="display: none;">
+                    <h3>سجل الطلبات السابقة</h3>
+                    <div id="order-history-list">
+                        <!-- Order history will be loaded here -->
+                    </div>
+                </div>
             </section>
 
             <!-- Admin Page -->
@@ -906,12 +1120,67 @@
                 
                 <div class="admin-panel">
                     <div class="admin-tabs">
-                        <div class="admin-tab active" data-tab="menu-management">إدارة القائمة</div>
-                        <div class="admin-tab" data-tab="settings">إعدادات المطعم</div>
+                        <div class="admin-tab active" data-tab="dashboard">لوحة التحكم</div>
+                        <div class="admin-tab" data-tab="menu-management">إدارة القائمة</div>
                         <div class="admin-tab" data-tab="orders">الطلبات</div>
+                        <div class="admin-tab" data-tab="employees">الموظفين والرواتب</div>
+                        <div class="admin-tab" data-tab="settings">إعدادات المطعم</div>
                     </div>
                     
-                    <div class="admin-content active" id="menu-management-content">
+                    <!-- Dashboard Content -->
+                    <div class="admin-content active" id="dashboard-content">
+                        <h3>نظرة عامة</h3>
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <i class="fas fa-shopping-cart fa-2x"></i>
+                                <div class="stat-value" id="today-orders">0</div>
+                                <div class="stat-label">طلبات اليوم</div>
+                            </div>
+                            
+                            <div class="stat-card">
+                                <i class="fas fa-money-bill-wave fa-2x"></i>
+                                <div class="stat-value" id="today-revenue">0 SAR</div>
+                                <div class="stat-label">إيرادات اليوم</div>
+                            </div>
+                            
+                            <div class="stat-card">
+                                <i class="fas fa-chart-line fa-2x"></i>
+                                <div class="stat-value" id="week-revenue">0 SAR</div>
+                                <div class="stat-label">إيرادات الأسبوع</div>
+                            </div>
+                            
+                            <div class="stat-card">
+                                <i class="fas fa-utensils fa-2x"></i>
+                                <div class="stat-value" id="total-items">0</div>
+                                <div class="stat-label">عدد الأصناف</div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group" style="flex: 1;">
+                                <h4>الطلبات الحديثة</h4>
+                                <div id="recent-orders">
+                                    <div class="empty-state">
+                                        <i class="fas fa-receipt"></i>
+                                        <h3>لا توجد طلبات حديثة</h3>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group" style="flex: 1;">
+                                <h4>الأصناف الأكثر طلباً</h4>
+                                <div id="popular-items">
+                                    <div class="empty-state">
+                                        <i class="fas fa-utensils"></i>
+                                        <h3>لا توجد بيانات</h3>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Menu Management Content -->
+                    <div class="admin-content" id="menu-management-content">
                         <h3>إدارة قائمة الطعام</h3>
                         <button class="btn btn-primary" id="add-item-btn">إضافة صنف جديد</button>
                         
@@ -924,6 +1193,33 @@
                         </div>
                     </div>
                     
+                    <!-- Orders Management Content -->
+                    <div class="admin-content" id="orders-content">
+                        <h3>إدارة الطلبات</h3>
+                        <div id="all-orders-list">
+                            <div class="empty-state">
+                                <i class="fas fa-receipt"></i>
+                                <h3>جارٍ تحميل الطلبات...</h3>
+                                <p>يرجى الانتظار</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Employees Management Content -->
+                    <div class="admin-content" id="employees-content">
+                        <h3>إدارة الموظفين والرواتب</h3>
+                        <button class="btn btn-primary" id="add-employee-btn">إضافة موظف جديد</button>
+                        
+                        <div class="employees-grid" id="employees-list">
+                            <div class="empty-state">
+                                <i class="fas fa-users"></i>
+                                <h3>لا توجد بيانات للموظفين</h3>
+                                <p>قم بإضافة موظفين جديدين</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Settings Content -->
                     <div class="admin-content" id="settings-content">
                         <h3>إعدادات المطعم</h3>
                         <form id="settings-form">
@@ -993,14 +1289,47 @@
                             <button type="submit" class="save-btn">حفظ الإعدادات</button>
                         </form>
                     </div>
+                </div>
+            </section>
+
+            <!-- Kitchen Page -->
+            <section id="kitchen" class="page">
+                <h2 class="section-title">طلبات المطبخ</h2>
+                
+                <div class="admin-panel">
+                    <div class="admin-tabs">
+                        <div class="admin-tab active" data-tab="pending-orders">الطلبات المعلقة</div>
+                        <div class="admin-tab" data-tab="preparing-orders">قيد التحضير</div>
+                        <div class="admin-tab" data-tab="ready-orders">جاهزة للتقديم</div>
+                    </div>
                     
-                    <div class="admin-content" id="orders-content">
-                        <h3>الطلبات الأخيرة</h3>
-                        <div id="orders-list">
+                    <div class="admin-content active" id="pending-orders-content">
+                        <h3>الطلبات المعلقة</h3>
+                        <div class="kitchen-orders" id="pending-orders-list">
                             <div class="empty-state">
-                                <i class="fas fa-receipt"></i>
-                                <h3>جارٍ تحميل الطلبات...</h3>
-                                <p>يرجى الانتظار</p>
+                                <i class="fas fa-utensils"></i>
+                                <h3>لا توجد طلبات معلقة</h3>
+                                <p>ستظهر هنا الطلبات الجديدة</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="admin-content" id="preparing-orders-content">
+                        <h3>الطلبات قيد التحضير</h3>
+                        <div class="kitchen-orders" id="preparing-orders-list">
+                            <div class="empty-state">
+                                <i class="fas fa-utensils"></i>
+                                <h3>لا توجد طلبات قيد التحضير</h3>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="admin-content" id="ready-orders-content">
+                        <h3>الطلبات الجاهزة للتقديم</h3>
+                        <div class="kitchen-orders" id="ready-orders-list">
+                            <div class="empty-state">
+                                <i class="fas fa-utensils"></i>
+                                <h3>لا توجد طلبات جاهزة</h3>
                             </div>
                         </div>
                     </div>
@@ -1014,31 +1343,72 @@
                 <div class="stats-grid">
                     <div class="stat-card">
                         <i class="fas fa-shopping-cart fa-2x"></i>
-                        <div class="stat-value" id="today-orders">0</div>
+                        <div class="stat-value" id="report-today-orders">0</div>
                         <div class="stat-label">طلبات اليوم</div>
                     </div>
                     
                     <div class="stat-card">
                         <i class="fas fa-money-bill-wave fa-2x"></i>
-                        <div class="stat-value" id="today-revenue">0 SAR</div>
+                        <div class="stat-value" id="report-today-revenue">0 SAR</div>
                         <div class="stat-label">إيرادات اليوم</div>
                     </div>
                     
                     <div class="stat-card">
                         <i class="fas fa-chart-line fa-2x"></i>
-                        <div class="stat-value" id="week-revenue">0 SAR</div>
+                        <div class="stat-value" id="report-week-revenue">0 SAR</div>
                         <div class="stat-label">إيرادات الأسبوع</div>
                     </div>
                     
                     <div class="stat-card">
                         <i class="fas fa-utensils fa-2x"></i>
-                        <div class="stat-value" id="total-items">0</div>
+                        <div class="stat-value" id="report-total-items">0</div>
                         <div class="stat-label">عدد الأصناف</div>
+                    </div>
+                </div>
+                
+                <div class="admin-panel">
+                    <h3>تقارير المبيعات</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="report-start-date">من تاريخ</label>
+                            <input type="date" id="report-start-date" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="report-end-date">إلى تاريخ</label>
+                            <input type="date" id="report-end-date" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label style="visibility: hidden;">.</label>
+                            <button class="btn btn-primary" id="generate-report-btn">إنشاء التقرير</button>
+                        </div>
+                    </div>
+                    
+                    <div id="sales-report">
+                        <div class="empty-state">
+                            <i class="fas fa-chart-bar"></i>
+                            <h3>لا توجد بيانات للتقرير</h3>
+                            <p>حدد الفترة الزمنية ثم انقر على إنشاء التقرير</p>
+                        </div>
+                    </div>
+                    
+                    <div class="action-buttons">
+                        <button class="btn btn-primary" id="export-report-btn" style="display: none;">
+                            <i class="fas fa-download"></i> تصدير التقرير
+                        </button>
                     </div>
                 </div>
             </section>
         </div>
     </main>
+
+    <!-- Notification -->
+    <div class="notification" id="notification">
+        <i class="fas fa-bell"></i>
+        <div class="notification-content">
+            <div class="notification-title" id="notification-title">إشعار</div>
+            <div class="notification-message" id="notification-message">رسالة الإشعار</div>
+        </div>
+    </div>
 
     <!-- Login Modal -->
     <div class="modal" id="login-modal">
@@ -1140,6 +1510,64 @@
         </div>
     </div>
 
+    <!-- Add/Edit Employee Modal -->
+    <div class="modal" id="employee-modal">
+        <div class="modal-content" style="max-width: 600px;">
+            <button class="close-modal" id="close-employee-modal">&times;</button>
+            <div class="modal-header">
+                <h3 class="modal-title" id="employee-modal-title">إضافة موظف جديد</h3>
+            </div>
+            <form id="employee-form">
+                <input type="hidden" id="edit-employee-id">
+                <div class="form-group">
+                    <label for="employee-name">اسم الموظف</label>
+                    <input type="text" id="employee-name" class="form-control" placeholder="أدخل اسم الموظف">
+                </div>
+                
+                <div class="form-group">
+                    <label for="employee-position">الوظيفة</label>
+                    <input type="text" id="employee-position" class="form-control" placeholder="أدخل الوظيفة">
+                </div>
+                
+                <div class="form-group">
+                    <label for="employee-salary">الراتب</label>
+                    <input type="number" id="employee-salary" class="form-control" placeholder="أدخل الراتب" min="0" step="0.01">
+                </div>
+                
+                <div class="form-group">
+                    <label for="employee-phone">رقم الهاتف</label>
+                    <input type="text" id="employee-phone" class="form-control" placeholder="أدخل رقم الهاتف">
+                </div>
+                
+                <div class="form-group">
+                    <label for="employee-email">البريد الإلكتروني</label>
+                    <input type="email" id="employee-email" class="form-control" placeholder="أدخل البريد الإلكتروني">
+                </div>
+                
+                <div class="form-group">
+                    <label for="employee-photo">صورة الموظف</label>
+                    <div class="image-upload-container">
+                        <div class="image-preview" id="employee-photo-preview">
+                            <span>لم يتم رفع صورة بعد</span>
+                        </div>
+                        <input type="file" id="employee-photo" class="form-control" accept="image/*" style="display: none;">
+                        <button type="button" class="upload-btn" id="employee-photo-upload-btn">رفع صورة</button>
+                    </div>
+                </div>
+                
+                <div class="action-buttons">
+                    <button type="submit" class="save-btn" style="flex: 1;">
+                        <span id="employee-btn-text">إضافة الموظف</span>
+                        <span class="loading" id="employee-loading" style="display: none;"></span>
+                    </button>
+                    <button type="button" class="btn btn-delete" id="delete-employee-btn" style="display: none;">
+                        <i class="fas fa-trash"></i> حذف
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- Receipt Modal -->
     <div class="modal" id="receipt-modal">
         <div class="modal-content">
@@ -1209,6 +1637,11 @@
         </div>
     </footer>
 
+    <!-- Audio for notifications -->
+    <audio id="notification-sound" preload="auto">
+        <source src="https://assets.mixkit.co/active_storage/sfx/286/286-preview.mp3" type="audio/mpeg">
+    </audio>
+
     <script>
         // Firebase Configuration
         const firebaseConfig = {
@@ -1236,6 +1669,7 @@
         let menuItems = [];
         let cart = [];
         let orders = [];
+        let employees = [];
         let categories = ["المقبلات", "الأطباق الرئيسية", "الحلويات", "المشروبات"];
         let restaurantConfig = {
             restaurant: {
@@ -1268,6 +1702,12 @@
             otp: "3377"
         };
 
+        // بيانات دخول المطبخ
+        const KITCHEN_CREDENTIALS = {
+            username: "مطبخ",
+            password: "1234"
+        };
+
         // مفتاح API لـ imgBB
         const IMGBB_API_KEY = '688477478b00303ff7023a3cb80f0943';
 
@@ -1283,6 +1723,7 @@
         const totalElement = document.getElementById('total');
         const checkoutBtn = document.getElementById('checkout-btn');
         const adminLink = document.getElementById('admin-link');
+        const kitchenLink = document.getElementById('kitchen-link');
         const loginBtn = document.getElementById('login-btn');
         const loginModal = document.getElementById('login-modal');
         const closeLoginModal = document.getElementById('close-login-modal');
@@ -1316,6 +1757,35 @@
         const itemModalTitle = document.getElementById('item-modal-title');
         const editItemId = document.getElementById('edit-item-id');
         const deleteItemBtn = document.getElementById('delete-item-btn');
+        const notification = document.getElementById('notification');
+        const notificationTitle = document.getElementById('notification-title');
+        const notificationMessage = document.getElementById('notification-message');
+        const notificationSound = document.getElementById('notification-sound');
+        const addEmployeeBtn = document.getElementById('add-employee-btn');
+        const employeeModal = document.getElementById('employee-modal');
+        const closeEmployeeModal = document.getElementById('close-employee-modal');
+        const employeeForm = document.getElementById('employee-form');
+        const employeesList = document.getElementById('employees-list');
+        const employeePhotoUploadBtn = document.getElementById('employee-photo-upload-btn');
+        const employeePhotoUpload = document.getElementById('employee-photo');
+        const employeePhotoPreview = document.getElementById('employee-photo-preview');
+        const employeeBtnText = document.getElementById('employee-btn-text');
+        const employeeLoading = document.getElementById('employee-loading');
+        const employeeModalTitle = document.getElementById('employee-modal-title');
+        const editEmployeeId = document.getElementById('edit-employee-id');
+        const deleteEmployeeBtn = document.getElementById('delete-employee-btn');
+        const orderHistory = document.getElementById('order-history');
+        const orderHistoryList = document.getElementById('order-history-list');
+        const generateReportBtn = document.getElementById('generate-report-btn');
+        const exportReportBtn = document.getElementById('export-report-btn');
+        const salesReport = document.getElementById('sales-report');
+
+        // Kitchen DOM Elements
+        const kitchenTabs = document.querySelectorAll('#kitchen .admin-tab');
+        const kitchenContents = document.querySelectorAll('#kitchen .admin-content');
+        const pendingOrdersList = document.getElementById('pending-orders-list');
+        const preparingOrdersList = document.getElementById('preparing-orders-list');
+        const readyOrdersList = document.getElementById('ready-orders-list');
 
         // Initialize App
         document.addEventListener('DOMContentLoaded', function() {
@@ -1323,13 +1793,17 @@
             currentUser = null;
             loginBtn.textContent = 'تسجيل الدخول';
             adminLink.style.display = 'none';
+            kitchenLink.style.display = 'none';
 
             setupEventListeners();
             loadRestaurantConfig();
             loadMenuItems();
             loadOrders();
+            loadEmployees();
             updateCategories();
             updateStats();
+            loadOrderHistory();
+            setupKitchenListeners();
         });
 
         // ==================== FIREBASE FUNCTIONS ====================
@@ -1407,6 +1881,7 @@
                     orders.push({ id: doc.id, ...doc.data() });
                 });
                 renderOrdersList();
+                renderKitchenOrders();
                 updateStats();
             } catch (error) {
                 console.error('Error loading orders:', error);
@@ -1423,6 +1898,59 @@
             }
         }
 
+        async function updateOrderStatus(orderId, status) {
+            try {
+                await db.collection('orders').doc(orderId).update({
+                    status: status,
+                    updatedAt: new Date()
+                });
+            } catch (error) {
+                console.error('Error updating order status:', error);
+                throw error;
+            }
+        }
+
+        async function loadEmployees() {
+            try {
+                const snapshot = await db.collection('employees').orderBy('createdAt', 'desc').get();
+                employees = [];
+                snapshot.forEach(doc => {
+                    employees.push({ id: doc.id, ...doc.data() });
+                });
+                renderEmployeesList();
+            } catch (error) {
+                console.error('Error loading employees:', error);
+            }
+        }
+
+        async function addEmployeeToFirebase(employee) {
+            try {
+                const docRef = await db.collection('employees').add(employee);
+                return docRef.id;
+            } catch (error) {
+                console.error('Error adding employee:', error);
+                throw error;
+            }
+        }
+
+        async function updateEmployeeInFirebase(employeeId, updates) {
+            try {
+                await db.collection('employees').doc(employeeId).update(updates);
+            } catch (error) {
+                console.error('Error updating employee:', error);
+                throw error;
+            }
+        }
+
+        async function deleteEmployeeFromFirebase(employeeId) {
+            try {
+                await db.collection('employees').doc(employeeId).delete();
+            } catch (error) {
+                console.error('Error deleting employee:', error);
+                throw error;
+            }
+        }
+
         // ==================== IMAGE UPLOAD WITH IMGBB ====================
 
         async function uploadImageToImgBB(file) {
@@ -1435,7 +1963,12 @@
                     method: 'POST',
                     body: formData
                 })
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
                 .then(data => {
                     if (data.success) {
                         resolve(data.data.url);
@@ -1473,6 +2006,7 @@
                         currentUser = null;
                         loginBtn.textContent = 'تسجيل الدخول';
                         adminLink.style.display = 'none';
+                        kitchenLink.style.display = 'none';
                         showPage('menu');
                     }
                 } else {
@@ -1491,6 +2025,13 @@
                 const username = document.getElementById('login-username').value;
                 const password = document.getElementById('login-password').value;
                 
+                // Check for kitchen login
+                if (username === KITCHEN_CREDENTIALS.username && password === KITCHEN_CREDENTIALS.password) {
+                    handleKitchenLogin();
+                    return;
+                }
+                
+                // Check for admin login
                 if (username === LOGIN_CREDENTIALS.username && password === LOGIN_CREDENTIALS.password) {
                     if (otpSection.style.display === 'none' || otpSection.style.display === '') {
                         otpSection.style.display = 'block';
@@ -1540,6 +2081,13 @@
                             content.classList.add('active');
                         }
                     });
+
+                    // Load specific data for each tab
+                    if (tabId === 'dashboard') {
+                        loadDashboardData();
+                    } else if (tabId === 'orders') {
+                        loadAllOrders();
+                    }
                 });
             });
 
@@ -1605,14 +2153,86 @@
                 showPage('menu');
             });
 
+            // Employee Management
+            addEmployeeBtn.addEventListener('click', () => {
+                openEmployeeModal();
+            });
+
+            closeEmployeeModal.addEventListener('click', () => {
+                employeeModal.classList.remove('active');
+                resetEmployeeForm();
+            });
+
+            employeeForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                if (editEmployeeId.value) {
+                    await updateEmployee();
+                } else {
+                    await addEmployee();
+                }
+            });
+
+            deleteEmployeeBtn.addEventListener('click', async () => {
+                if (editEmployeeId.value && confirm('هل أنت متأكد من حذف هذا الموظف؟')) {
+                    await deleteEmployee(editEmployeeId.value);
+                }
+            });
+
+            employeePhotoUploadBtn.addEventListener('click', () => employeePhotoUpload.click());
+            employeePhotoUpload.addEventListener('change', handleEmployeePhotoUpload);
+
+            // Reports
+            generateReportBtn.addEventListener('click', generateSalesReport);
+            exportReportBtn.addEventListener('click', exportReport);
+
             console.log("Event listeners setup completed");
+        }
+
+        function setupKitchenListeners() {
+            // Kitchen Tabs
+            kitchenTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const tabId = tab.getAttribute('data-tab');
+                    
+                    kitchenTabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    
+                    kitchenContents.forEach(content => {
+                        content.classList.remove('active');
+                        if (content.id === `${tabId}-content`) {
+                            content.classList.add('active');
+                        }
+                    });
+                });
+            });
+        }
+
+        function handleKitchenLogin() {
+            currentUser = { 
+                uid: 'kitchen', 
+                displayName: 'مطبخ',
+                loginTime: new Date(),
+                role: 'kitchen'
+            };
+            
+            loginModal.classList.remove('active');
+            loginBtn.textContent = 'تسجيل الخروج';
+            kitchenLink.style.display = 'block';
+            showPage('kitchen');
+            
+            setTimeout(() => {
+                alert('مرحباً بك في نظام المطبخ!');
+            }, 500);
+            
+            resetLoginForm();
         }
 
         function handleSuccessfulLogin() {
             currentUser = { 
                 uid: 'admin', 
                 displayName: 'حسن',
-                loginTime: new Date()
+                loginTime: new Date(),
+                role: 'admin'
             };
             
             loginModal.classList.remove('active');
@@ -1636,9 +2256,19 @@
         }
 
         function showPage(pageId) {
-            if (pageId === 'admin' && !currentUser) {
-                alert('يجب تسجيل الدخول للوصول إلى لوحة الإدارة');
+            if ((pageId === 'admin' || pageId === 'kitchen') && !currentUser) {
+                alert('يجب تسجيل الدخول للوصول إلى هذه الصفحة');
                 loginModal.classList.add('active');
+                return;
+            }
+            
+            if (pageId === 'admin' && currentUser && currentUser.role === 'kitchen') {
+                alert('ليس لديك صلاحية الوصول إلى لوحة الإدارة');
+                return;
+            }
+            
+            if (pageId === 'kitchen' && currentUser && currentUser.role === 'admin') {
+                alert('يجب تسجيل الدخول بحساب المطبخ للوصول إلى هذه الصفحة');
                 return;
             }
             
@@ -1655,6 +2285,30 @@
                     link.classList.add('active');
                 }
             });
+
+            // Load specific data for each page
+            if (pageId === 'reports') {
+                updateReportStats();
+            } else if (pageId === 'kitchen') {
+                renderKitchenOrders();
+            }
+        }
+
+        // ==================== NOTIFICATION SYSTEM ====================
+
+        function showNotification(title, message, type = 'success') {
+            notificationTitle.textContent = title;
+            notificationMessage.textContent = message;
+            notification.className = `notification ${type}`;
+            notification.classList.add('show');
+            
+            // Play notification sound
+            notificationSound.play().catch(e => console.log('Audio play failed:', e));
+            
+            // Hide notification after 5 seconds
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 5000);
         }
 
         // ==================== MENU ITEMS MANAGEMENT ====================
@@ -1735,7 +2389,7 @@
                 renderAdminMenuItems();
                 
                 itemModal.classList.remove('active');
-                alert('تم إضافة الصنف بنجاح!');
+                showNotification('نجاح', 'تم إضافة الصنف بنجاح!');
                 updateStats();
                 
             } catch (error) {
@@ -1788,7 +2442,7 @@
                 renderAdminMenuItems();
                 
                 itemModal.classList.remove('active');
-                alert('تم تحديث الصنف بنجاح!');
+                showNotification('نجاح', 'تم تحديث الصنف بنجاح!');
                 
             } catch (error) {
                 console.error('Error updating menu item:', error);
@@ -1806,7 +2460,7 @@
                 renderMenuItems(menuItems);
                 renderAdminMenuItems();
                 itemModal.classList.remove('active');
-                alert('تم حذف الصنف بنجاح!');
+                showNotification('نجاح', 'تم حذف الصنف بنجاح!');
                 updateStats();
             } catch (error) {
                 console.error('Error deleting menu item:', error);
@@ -1817,6 +2471,21 @@
         function handleImageUpload(e) {
             const file = e.target.files[0];
             if (file) {
+                // التحقق من حجم الملف (5MB كحد أقصى)
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('حجم الصورة كبير جداً! الحد الأقصى هو 5MB.');
+                    e.target.value = '';
+                    return;
+                }
+                
+                // التحقق من نوع الملف
+                const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+                if (!validTypes.includes(file.type)) {
+                    alert('نوع الملف غير مدعوم! يرجى اختيار صورة (JPEG, PNG, GIF).');
+                    e.target.value = '';
+                    return;
+                }
+                
                 const reader = new FileReader();
                 reader.onload = (e) => {
                     itemImagePreview.innerHTML = `<img src="${e.target.result}" alt="صورة الصنف">`;
@@ -1828,6 +2497,21 @@
         function handleLogoUpload(e) {
             const file = e.target.files[0];
             if (file) {
+                // التحقق من حجم الملف (5MB كحد أقصى)
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('حجم الصورة كبير جداً! الحد الأقصى هو 5MB.');
+                    e.target.value = '';
+                    return;
+                }
+                
+                // التحقق من نوع الملف
+                const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+                if (!validTypes.includes(file.type)) {
+                    alert('نوع الملف غير مدعوم! يرجى اختيار صورة (JPEG, PNG, GIF).');
+                    e.target.value = '';
+                    return;
+                }
+                
                 const reader = new FileReader();
                 reader.onload = async (e) => {
                     logoPreview.innerHTML = `<img src="${e.target.result}" alt="شعار المطعم">`;
@@ -1839,6 +2523,189 @@
                         console.error('Error uploading logo:', error);
                         alert('حدث خطأ أثناء رفع الشعار!');
                     }
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // ==================== EMPLOYEE MANAGEMENT ====================
+
+        function openEmployeeModal(employee = null) {
+            resetEmployeeForm();
+            
+            if (employee) {
+                // Edit Mode
+                employeeModalTitle.textContent = 'تعديل بيانات الموظف';
+                employeeBtnText.textContent = 'تحديث البيانات';
+                editEmployeeId.value = employee.id;
+                deleteEmployeeBtn.style.display = 'block';
+                
+                document.getElementById('employee-name').value = employee.name;
+                document.getElementById('employee-position').value = employee.position;
+                document.getElementById('employee-salary').value = employee.salary;
+                document.getElementById('employee-phone').value = employee.phone || '';
+                document.getElementById('employee-email').value = employee.email || '';
+                
+                if (employee.photo) {
+                    employeePhotoPreview.innerHTML = `<img src="${employee.photo}" alt="صورة الموظف">`;
+                }
+            } else {
+                // Add Mode
+                employeeModalTitle.textContent = 'إضافة موظف جديد';
+                employeeBtnText.textContent = 'إضافة الموظف';
+                deleteEmployeeBtn.style.display = 'none';
+            }
+            
+            employeeModal.classList.add('active');
+        }
+
+        function resetEmployeeForm() {
+            employeeForm.reset();
+            editEmployeeId.value = '';
+            employeePhotoPreview.innerHTML = '<span>لم يتم رفع صورة بعد</span>';
+            employeeLoading.style.display = 'none';
+            employeePhotoUpload.value = '';
+        }
+
+        async function addEmployee() {
+            const name = document.getElementById('employee-name').value;
+            const position = document.getElementById('employee-position').value;
+            const salary = parseFloat(document.getElementById('employee-salary').value);
+            const phone = document.getElementById('employee-phone').value;
+            const email = document.getElementById('employee-email').value;
+            
+            if (!name || !position || !salary) {
+                alert('يرجى ملء جميع الحقول المطلوبة!');
+                return;
+            }
+            
+            employeeBtnText.textContent = 'جاري الإضافة...';
+            employeeLoading.style.display = 'inline-block';
+            
+            try {
+                let photoUrl = '';
+                const photoFile = employeePhotoUpload.files[0];
+                
+                if (photoFile) {
+                    photoUrl = await uploadImageToImgBB(photoFile);
+                }
+                
+                const newEmployee = {
+                    name,
+                    position,
+                    salary,
+                    phone,
+                    email,
+                    photo: photoUrl,
+                    createdAt: new Date(),
+                    updatedAt: new Date()
+                };
+                
+                const employeeId = await addEmployeeToFirebase(newEmployee);
+                newEmployee.id = employeeId;
+                
+                employees.unshift(newEmployee);
+                renderEmployeesList();
+                
+                employeeModal.classList.remove('active');
+                showNotification('نجاح', 'تم إضافة الموظف بنجاح!');
+                
+            } catch (error) {
+                console.error('Error adding employee:', error);
+                alert('حدث خطأ أثناء إضافة الموظف! ' + error.message);
+            } finally {
+                employeeBtnText.textContent = 'إضافة الموظف';
+                employeeLoading.style.display = 'none';
+            }
+        }
+
+        async function updateEmployee() {
+            const name = document.getElementById('employee-name').value;
+            const position = document.getElementById('employee-position').value;
+            const salary = parseFloat(document.getElementById('employee-salary').value);
+            const phone = document.getElementById('employee-phone').value;
+            const email = document.getElementById('employee-email').value;
+            const employeeId = editEmployeeId.value;
+            
+            if (!name || !position || !salary || !employeeId) {
+                alert('يرجى ملء جميع الحقول المطلوبة!');
+                return;
+            }
+            
+            employeeBtnText.textContent = 'جاري التحديث...';
+            employeeLoading.style.display = 'inline-block';
+            
+            try {
+                const updates = {
+                    name,
+                    position,
+                    salary,
+                    phone,
+                    email,
+                    updatedAt: new Date()
+                };
+                
+                const photoFile = employeePhotoUpload.files[0];
+                if (photoFile) {
+                    updates.photo = await uploadImageToImgBB(photoFile);
+                }
+                
+                await updateEmployeeInFirebase(employeeId, updates);
+                
+                // Update local state
+                const employeeIndex = employees.findIndex(emp => emp.id === employeeId);
+                if (employeeIndex !== -1) {
+                    employees[employeeIndex] = { ...employees[employeeIndex], ...updates };
+                }
+                
+                renderEmployeesList();
+                
+                employeeModal.classList.remove('active');
+                showNotification('نجاح', 'تم تحديث بيانات الموظف بنجاح!');
+                
+            } catch (error) {
+                console.error('Error updating employee:', error);
+                alert('حدث خطأ أثناء تحديث بيانات الموظف! ' + error.message);
+            } finally {
+                employeeBtnText.textContent = 'تحديث البيانات';
+                employeeLoading.style.display = 'none';
+            }
+        }
+
+        async function deleteEmployee(employeeId) {
+            try {
+                await deleteEmployeeFromFirebase(employeeId);
+                employees = employees.filter(emp => emp.id !== employeeId);
+                renderEmployeesList();
+                employeeModal.classList.remove('active');
+                showNotification('نجاح', 'تم حذف الموظف بنجاح!');
+            } catch (error) {
+                console.error('Error deleting employee:', error);
+                alert('حدث خطأ أثناء حذف الموظف!');
+            }
+        }
+
+        function handleEmployeePhotoUpload(e) {
+            const file = e.target.files[0];
+            if (file) {
+                // التحقق من حجم الملف (5MB كحد أقصى)
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('حجم الصورة كبير جداً! الحد الأقصى هو 5MB.');
+                    e.target.value = '';
+                    return;
+                }
+                
+                // التحقق من نوع الملف
+                const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+                if (!validTypes.includes(file.type)) {
+                    alert('نوع الملف غير مدعوم! يرجى اختيار صورة (JPEG, PNG, GIF).');
+                    e.target.value = '';
+                    return;
+                }
+                
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    employeePhotoPreview.innerHTML = `<img src="${e.target.result}" alt="صورة الموظف">`;
                 };
                 reader.readAsDataURL(file);
             }
@@ -1923,6 +2790,51 @@
             }
             
             return menuItemElement;
+        }
+
+        function renderEmployeesList() {
+            employeesList.innerHTML = '';
+            
+            if (employees.length === 0) {
+                showEmptyState(employeesList, 'لا توجد بيانات للموظفين', 'قم بإضافة موظفين جديدين');
+                return;
+            }
+            
+            employees.forEach(employee => {
+                const employeeElement = document.createElement('div');
+                employeeElement.className = 'employee-card';
+                employeeElement.innerHTML = `
+                    <img src="${employee.photo || 'https://via.placeholder.com/120x120?text=صورة+الموظف'}" alt="صورة الموظف" class="employee-photo">
+                    <div class="employee-info">
+                        <div class="employee-name">${employee.name}</div>
+                        <div class="employee-position">${employee.position}</div>
+                        <div class="employee-salary">${employee.salary} ${restaurantConfig.settings.currency}</div>
+                    </div>
+                    <div class="action-buttons">
+                        <button class="btn btn-edit edit-employee" data-id="${employee.id}">
+                            <i class="fas fa-edit"></i> تعديل
+                        </button>
+                        <button class="btn btn-delete delete-employee" data-id="${employee.id}">
+                            <i class="fas fa-trash"></i> حذف
+                        </button>
+                    </div>
+                `;
+                
+                employeeElement.querySelector('.edit-employee').addEventListener('click', (e) => {
+                    const employeeId = e.target.closest('.edit-employee').getAttribute('data-id');
+                    const employee = employees.find(emp => emp.id === employeeId);
+                    if (employee) openEmployeeModal(employee);
+                });
+                
+                employeeElement.querySelector('.delete-employee').addEventListener('click', async (e) => {
+                    const employeeId = e.target.closest('.delete-employee').getAttribute('data-id');
+                    if (confirm('هل أنت متأكد من حذف هذا الموظف؟')) {
+                        await deleteEmployee(employeeId);
+                    }
+                });
+                
+                employeesList.appendChild(employeeElement);
+            });
         }
 
         // ==================== CART & ORDERS ====================
@@ -2062,7 +2974,7 @@
                 subtotal,
                 tax,
                 total,
-                status: 'completed',
+                status: 'pending', // تغيير الحالة إلى معلق بدلاً من مكتمل
                 createdAt: new Date(),
                 createdBy: currentUser ? currentUser.uid : 'guest'
             };
@@ -2072,7 +2984,12 @@
                 orders.push(order);
                 generateReceipt(order);
                 receiptModal.classList.add('active');
+                
+                // إرسال إشعار للمطبخ
+                showNotification('طلب جديد', 'تم استلام طلب جديد للمطبخ', 'warning');
+                
                 updateStats();
+                loadOrderHistory();
             } catch (error) {
                 console.error('Error creating order:', error);
                 alert('حدث خطأ أثناء حفظ الطلب!');
@@ -2152,11 +3069,397 @@
                                 <div class="cart-item-name">طلب ${order.id}</div>
                                 <div class="cart-item-price">${order.total.toFixed(2)} ${restaurantConfig.settings.currency}</div>
                                 <small>${new Date(order.createdAt).toLocaleString('ar-SA')}</small>
+                                <div class="order-status status-${order.status}">${getStatusText(order.status)}</div>
                             </div>
+                            ${order.status !== 'completed' ? `
+                                <div class="action-buttons">
+                                    <button class="btn btn-primary update-order-status" data-id="${order.id}" data-status="preparing">
+                                        <i class="fas fa-utensils"></i> بدء التحضير
+                                    </button>
+                                    <button class="btn btn-success update-order-status" data-id="${order.id}" data-status="ready">
+                                        <i class="fas fa-check"></i> تم الانتهاء
+                                    </button>
+                                    <button class="btn btn-warning update-order-status" data-id="${order.id}" data-status="completed">
+                                        <i class="fas fa-check-circle"></i> تم التسليم
+                                    </button>
+                                </div>
+                            ` : ''}
                         </div>
                     `).join('')}
                 </div>
             `;
+            
+            // Add event listeners for status updates
+            document.querySelectorAll('.update-order-status').forEach(btn => {
+                btn.addEventListener('click', async (e) => {
+                    const orderId = btn.getAttribute('data-id');
+                    const newStatus = btn.getAttribute('data-status');
+                    
+                    try {
+                        await updateOrderStatus(orderId, newStatus);
+                        
+                        // Update local state
+                        const orderIndex = orders.findIndex(order => order.id === orderId);
+                        if (orderIndex !== -1) {
+                            orders[orderIndex].status = newStatus;
+                        }
+                        
+                        renderOrdersList();
+                        renderKitchenOrders();
+                        
+                        // Show notification for kitchen orders
+                        if (newStatus === 'ready') {
+                            showNotification('طلب جاهز', `الطلب ${orderId} جاهز للتقديم`, 'success');
+                        }
+                        
+                    } catch (error) {
+                        console.error('Error updating order status:', error);
+                        alert('حدث خطأ أثناء تحديث حالة الطلب!');
+                    }
+                });
+            });
+        }
+
+        function loadAllOrders() {
+            const allOrdersList = document.getElementById('all-orders-list');
+            if (!allOrdersList) return;
+            
+            renderOrdersList();
+        }
+
+        function getStatusText(status) {
+            const statusMap = {
+                'pending': 'معلق',
+                'preparing': 'قيد التحضير',
+                'ready': 'جاهز',
+                'completed': 'مكتمل'
+            };
+            
+            return statusMap[status] || status;
+        }
+
+        function getStatusClass(status) {
+            const classMap = {
+                'pending': 'status-pending',
+                'preparing': 'status-preparing',
+                'ready': 'status-ready',
+                'completed': 'status-completed'
+            };
+            
+            return classMap[status] || 'status-pending';
+        }
+
+        // ==================== KITCHEN ORDERS ====================
+
+        function renderKitchenOrders() {
+            const pendingOrders = orders.filter(order => order.status === 'pending');
+            const preparingOrders = orders.filter(order => order.status === 'preparing');
+            const readyOrders = orders.filter(order => order.status === 'ready');
+            
+            renderKitchenOrderList(pendingOrdersList, pendingOrders, 'pending');
+            renderKitchenOrderList(preparingOrdersList, preparingOrders, 'preparing');
+            renderKitchenOrderList(readyOrdersList, readyOrders, 'ready');
+        }
+
+        function renderKitchenOrderList(container, orders, status) {
+            container.innerHTML = '';
+            
+            if (orders.length === 0) {
+                showEmptyState(container, `لا توجد طلبات ${getStatusText(status)}`, 'ستظهر هنا الطلبات عند توفرها');
+                return;
+            }
+            
+            orders.forEach(order => {
+                const orderElement = document.createElement('div');
+                orderElement.className = `kitchen-order ${status === 'ready' ? 'ready' : ''}`;
+                orderElement.innerHTML = `
+                    <div class="order-header">
+                        <h4>طلب ${order.id}</h4>
+                        <span class="order-status ${getStatusClass(order.status)}">${getStatusText(order.status)}</span>
+                    </div>
+                    <div class="order-time">
+                        <small>${new Date(order.createdAt).toLocaleString('ar-SA')}</small>
+                    </div>
+                    <div class="order-items">
+                        ${order.items.map(item => `
+                            <div class="order-item">
+                                <span>${item.name} × ${item.quantity}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div class="order-total">
+                        <strong>المجموع: ${order.total.toFixed(2)} ${restaurantConfig.settings.currency}</strong>
+                    </div>
+                    <div class="action-buttons">
+                        ${status === 'pending' ? `
+                            <button class="btn btn-primary update-kitchen-order" data-id="${order.id}" data-status="preparing">
+                                <i class="fas fa-utensils"></i> بدء التحضير
+                            </button>
+                        ` : ''}
+                        ${status === 'preparing' ? `
+                            <button class="btn btn-success update-kitchen-order" data-id="${order.id}" data-status="ready">
+                                <i class="fas fa-check"></i> تم الانتهاء
+                            </button>
+                        ` : ''}
+                        ${status === 'ready' ? `
+                            <button class="btn btn-warning update-kitchen-order" data-id="${order.id}" data-status="completed">
+                                <i class="fas fa-check-circle"></i> تم التسليم
+                            </button>
+                        ` : ''}
+                    </div>
+                `;
+                
+                // Add event listeners for status updates
+                orderElement.querySelectorAll('.update-kitchen-order').forEach(btn => {
+                    btn.addEventListener('click', async (e) => {
+                        const orderId = btn.getAttribute('data-id');
+                        const newStatus = btn.getAttribute('data-status');
+                        
+                        try {
+                            await updateOrderStatus(orderId, newStatus);
+                            
+                            // Update local state
+                            const orderIndex = orders.findIndex(order => order.id === orderId);
+                            if (orderIndex !== -1) {
+                                orders[orderIndex].status = newStatus;
+                            }
+                            
+                            renderKitchenOrders();
+                            
+                            // Show notification for ready orders
+                            if (newStatus === 'ready') {
+                                showNotification('طلب جاهز', `الطلب ${orderId} جاهز للتقديم`, 'success');
+                            }
+                            
+                        } catch (error) {
+                            console.error('Error updating order status:', error);
+                            alert('حدث خطأ أثناء تحديث حالة الطلب!');
+                        }
+                    });
+                });
+                
+                container.appendChild(orderElement);
+            });
+        }
+
+        // ==================== ORDER HISTORY ====================
+
+        function loadOrderHistory() {
+            orderHistoryList.innerHTML = '';
+            
+            const completedOrders = orders.filter(order => order.status === 'completed');
+            
+            if (completedOrders.length === 0) {
+                orderHistory.style.display = 'none';
+                return;
+            }
+            
+            orderHistory.style.display = 'block';
+            
+            completedOrders.forEach(order => {
+                const orderElement = document.createElement('div');
+                orderElement.className = 'order-history-item';
+                orderElement.innerHTML = `
+                    <div class="order-history-info">
+                        <div class="order-history-id">طلب ${order.id}</div>
+                        <div class="order-history-date">${new Date(order.createdAt).toLocaleString('ar-SA')}</div>
+                    </div>
+                    <div class="order-history-total">${order.total.toFixed(2)} ${restaurantConfig.settings.currency}</div>
+                `;
+                
+                orderHistoryList.appendChild(orderElement);
+            });
+        }
+
+        // ==================== REPORTS ====================
+
+        function updateReportStats() {
+            const todayOrders = orders.filter(order => {
+                const orderDate = new Date(order.createdAt);
+                const today = new Date();
+                return orderDate.toDateString() === today.toDateString();
+            }).length;
+            
+            const todayRevenue = orders.filter(order => {
+                const orderDate = new Date(order.createdAt);
+                const today = new Date();
+                return orderDate.toDateString() === today.toDateString();
+            }).reduce((sum, order) => sum + order.total, 0);
+            
+            const weekRevenue = orders.filter(order => {
+                const orderDate = new Date(order.createdAt);
+                const weekAgo = new Date();
+                weekAgo.setDate(weekAgo.getDate() - 7);
+                return orderDate >= weekAgo;
+            }).reduce((sum, order) => sum + order.total, 0);
+            
+            document.getElementById('report-today-orders').textContent = todayOrders;
+            document.getElementById('report-today-revenue').textContent = `${todayRevenue.toFixed(2)} ${restaurantConfig.settings.currency}`;
+            document.getElementById('report-week-revenue').textContent = `${weekRevenue.toFixed(2)} ${restaurantConfig.settings.currency}`;
+            document.getElementById('report-total-items').textContent = menuItems.length;
+        }
+
+        function generateSalesReport() {
+            const startDate = document.getElementById('report-start-date').value;
+            const endDate = document.getElementById('report-end-date').value;
+            
+            if (!startDate || !endDate) {
+                alert('يرجى تحديد فترة زمنية للتقرير');
+                return;
+            }
+            
+            const start = new Date(startDate);
+            const end = new Date(endDate);
+            end.setHours(23, 59, 59, 999); // نهاية اليوم
+            
+            const filteredOrders = orders.filter(order => {
+                const orderDate = new Date(order.createdAt);
+                return orderDate >= start && orderDate <= end;
+            });
+            
+            if (filteredOrders.length === 0) {
+                salesReport.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-chart-bar"></i>
+                        <h3>لا توجد طلبات في الفترة المحددة</h3>
+                        <p>يرجى اختيار فترة زمنية أخرى</p>
+                    </div>
+                `;
+                exportReportBtn.style.display = 'none';
+                return;
+            }
+            
+            const totalRevenue = filteredOrders.reduce((sum, order) => sum + order.total, 0);
+            const totalOrders = filteredOrders.length;
+            
+            // حساب الأصناف الأكثر طلباً
+            const itemCounts = {};
+            filteredOrders.forEach(order => {
+                order.items.forEach(item => {
+                    if (itemCounts[item.name]) {
+                        itemCounts[item.name] += item.quantity;
+                    } else {
+                        itemCounts[item.name] = item.quantity;
+                    }
+                });
+            });
+            
+            const popularItems = Object.entries(itemCounts)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 5);
+            
+            salesReport.innerHTML = `
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <i class="fas fa-shopping-cart fa-2x"></i>
+                        <div class="stat-value">${totalOrders}</div>
+                        <div class="stat-label">إجمالي الطلبات</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <i class="fas fa-money-bill-wave fa-2x"></i>
+                        <div class="stat-value">${totalRevenue.toFixed(2)} ${restaurantConfig.settings.currency}</div>
+                        <div class="stat-label">إجمالي الإيرادات</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <i class="fas fa-chart-pie fa-2x"></i>
+                        <div class="stat-value">${(totalRevenue / totalOrders).toFixed(2)} ${restaurantConfig.settings.currency}</div>
+                        <div class="stat-label">متوسط قيمة الطلب</div>
+                    </div>
+                </div>
+                
+                <h4>الأصناف الأكثر طلباً</h4>
+                <div class="cart-container">
+                    ${popularItems.map(item => `
+                        <div class="cart-item">
+                            <div class="cart-item-info">
+                                <div class="cart-item-name">${item[0]}</div>
+                            </div>
+                            <div class="cart-item-price">${item[1]} طلبات</div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            
+            exportReportBtn.style.display = 'block';
+        }
+
+        function exportReport() {
+            // في تطبيق حقيقي، يمكن هنا إنشاء ملف PDF أو Excel
+            alert('سيتم تصدير التقرير في نسخة حقيقية من النظام');
+        }
+
+        // ==================== DASHBOARD ====================
+
+        function loadDashboardData() {
+            // الطلبات الحديثة (آخر 5 طلبات)
+            const recentOrders = orders.slice(0, 5);
+            const recentOrdersContainer = document.getElementById('recent-orders');
+            
+            if (recentOrders.length === 0) {
+                recentOrdersContainer.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-receipt"></i>
+                        <h3>لا توجد طلبات حديثة</h3>
+                    </div>
+                `;
+            } else {
+                recentOrdersContainer.innerHTML = `
+                    <div class="cart-container">
+                        ${recentOrders.map(order => `
+                            <div class="cart-item">
+                                <div class="cart-item-info">
+                                    <div class="cart-item-name">طلب ${order.id}</div>
+                                    <div class="cart-item-price">${order.total.toFixed(2)} ${restaurantConfig.settings.currency}</div>
+                                    <small>${new Date(order.createdAt).toLocaleString('ar-SA')}</small>
+                                    <div class="order-status ${getStatusClass(order.status)}">${getStatusText(order.status)}</div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }
+            
+            // الأصناف الأكثر طلباً
+            const itemCounts = {};
+            orders.forEach(order => {
+                order.items.forEach(item => {
+                    if (itemCounts[item.name]) {
+                        itemCounts[item.name] += item.quantity;
+                    } else {
+                        itemCounts[item.name] = item.quantity;
+                    }
+                });
+            });
+            
+            const popularItems = Object.entries(itemCounts)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 5);
+                
+            const popularItemsContainer = document.getElementById('popular-items');
+            
+            if (popularItems.length === 0) {
+                popularItemsContainer.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-utensils"></i>
+                        <h3>لا توجد بيانات</h3>
+                    </div>
+                `;
+            } else {
+                popularItemsContainer.innerHTML = `
+                    <div class="cart-container">
+                        ${popularItems.map(item => `
+                            <div class="cart-item">
+                                <div class="cart-item-info">
+                                    <div class="cart-item-name">${item[0]}</div>
+                                </div>
+                                <div class="cart-item-price">${item[1]} طلبات</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }
         }
 
         // ==================== UTILITY FUNCTIONS ====================
@@ -2252,7 +3555,7 @@
             try {
                 await saveRestaurantConfigToFirebase();
                 updateUIWithConfig();
-                alert('تم حفظ الإعدادات بنجاح!');
+                showNotification('نجاح', 'تم حفظ الإعدادات بنجاح!');
             } catch (error) {
                 console.error('Error saving restaurant config:', error);
                 alert('حدث خطأ أثناء حفظ الإعدادات!');
