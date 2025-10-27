@@ -478,7 +478,7 @@
             border-radius: var(--radius);
             padding: 30px;
             width: 100%;
-            max-width: 400px;
+            max-width: 500px;
             box-shadow: var(--shadow);
         }
 
@@ -975,6 +975,10 @@
             border-left: 4px solid var(--warning);
         }
 
+        .notification.info {
+            border-left: 4px solid var(--primary);
+        }
+
         .notification i {
             font-size: 1.5rem;
         }
@@ -985,6 +989,10 @@
 
         .notification.warning i {
             color: var(--warning);
+        }
+
+        .notification.info i {
+            color: var(--primary);
         }
 
         /* Order History */
@@ -1026,6 +1034,47 @@
             font-weight: 700;
             color: var(--primary);
         }
+
+        /* Kitchen Login Styles */
+        .login-type-selector {
+            display: flex;
+            margin-bottom: 20px;
+            border-radius: var(--radius);
+            overflow: hidden;
+            border: 1px solid #ddd;
+        }
+
+        .login-type-btn {
+            flex: 1;
+            padding: 10px;
+            text-align: center;
+            background: #f8f9fa;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .login-type-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Real-time Order Badge */
+        .order-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--danger);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -1042,7 +1091,10 @@
                         <li><a href="#" class="nav-link active" data-page="menu">القائمة</a></li>
                         <li><a href="#" class="nav-link" data-page="cart">سلة الطلبات</a></li>
                         <li><a href="#" class="nav-link" data-page="admin" id="admin-link">الإدارة</a></li>
-                        <li><a href="#" class="nav-link" data-page="kitchen" id="kitchen-link">المطبخ</a></li>
+                        <li><a href="#" class="nav-link" data-page="kitchen" id="kitchen-link">
+                            المطبخ 
+                            <span class="order-badge" id="kitchen-badge" style="display: none;">0</span>
+                        </a></li>
                         <li><a href="#" class="nav-link" data-page="reports">التقارير</a></li>
                     </ul>
                 </nav>
@@ -1304,7 +1356,7 @@
                     </div>
                     
                     <div class="admin-content active" id="pending-orders-content">
-                        <h3>الطلبات المعلقة</h3>
+                        <h3>الطلبات المعلقة <span class="order-badge" id="pending-badge">0</span></h3>
                         <div class="kitchen-orders" id="pending-orders-list">
                             <div class="empty-state">
                                 <i class="fas fa-utensils"></i>
@@ -1315,7 +1367,7 @@
                     </div>
                     
                     <div class="admin-content" id="preparing-orders-content">
-                        <h3>الطلبات قيد التحضير</h3>
+                        <h3>الطلبات قيد التحضير <span class="order-badge" id="preparing-badge">0</span></h3>
                         <div class="kitchen-orders" id="preparing-orders-list">
                             <div class="empty-state">
                                 <i class="fas fa-utensils"></i>
@@ -1325,7 +1377,7 @@
                     </div>
                     
                     <div class="admin-content" id="ready-orders-content">
-                        <h3>الطلبات الجاهزة للتقديم</h3>
+                        <h3>الطلبات الجاهزة للتقديم <span class="order-badge" id="ready-badge">0</span></h3>
                         <div class="kitchen-orders" id="ready-orders-list">
                             <div class="empty-state">
                                 <i class="fas fa-utensils"></i>
@@ -1417,6 +1469,12 @@
             <div class="modal-header">
                 <h3 class="modal-title">تسجيل الدخول</h3>
             </div>
+            
+            <div class="login-type-selector">
+                <button type="button" class="login-type-btn active" id="admin-login-btn">الإدارة</button>
+                <button type="button" class="login-type-btn" id="kitchen-login-btn">المطبخ</button>
+            </div>
+            
             <form id="login-form">
                 <div class="form-group">
                     <label for="login-username">اسم المستخدم</label>
@@ -1447,7 +1505,7 @@
 
     <!-- Add/Edit Item Modal -->
     <div class="modal" id="item-modal">
-        <div class="modal-content" style="max-width: 800px;">
+        <div class="modal-content" style="max-width: 600px;">
             <button class="close-modal" id="close-item-modal">&times;</button>
             <div class="modal-header">
                 <h3 class="modal-title" id="item-modal-title">إضافة صنف جديد</h3>
@@ -1512,7 +1570,7 @@
 
     <!-- Add/Edit Employee Modal -->
     <div class="modal" id="employee-modal">
-        <div class="modal-content" style="max-width: 600px;">
+        <div class="modal-content" style="max-width: 500px;">
             <button class="close-modal" id="close-employee-modal">&times;</button>
             <div class="modal-header">
                 <h3 class="modal-title" id="employee-modal-title">إضافة موظف جديد</h3>
@@ -1537,11 +1595,6 @@
                 <div class="form-group">
                     <label for="employee-phone">رقم الهاتف</label>
                     <input type="text" id="employee-phone" class="form-control" placeholder="أدخل رقم الهاتف">
-                </div>
-                
-                <div class="form-group">
-                    <label for="employee-email">البريد الإلكتروني</label>
-                    <input type="email" id="employee-email" class="form-control" placeholder="أدخل البريد الإلكتروني">
                 </div>
                 
                 <div class="form-group">
@@ -1697,15 +1750,15 @@
 
         // بيانات الدخول المخفية
         const LOGIN_CREDENTIALS = {
-            username: "حسن",
-            password: "00",
-            otp: "3377"
+            username: "admin",
+            password: "admin123",
+            otp: "1234"
         };
 
         // بيانات دخول المطبخ
         const KITCHEN_CREDENTIALS = {
-            username: "مطبخ",
-            password: "1234"
+            username: "kitchen",
+            password: "kitchen123"
         };
 
         // مفتاح API لـ imgBB
@@ -1779,6 +1832,12 @@
         const generateReportBtn = document.getElementById('generate-report-btn');
         const exportReportBtn = document.getElementById('export-report-btn');
         const salesReport = document.getElementById('sales-report');
+        const adminLoginBtn = document.getElementById('admin-login-btn');
+        const kitchenLoginBtn = document.getElementById('kitchen-login-btn');
+        const kitchenBadge = document.getElementById('kitchen-badge');
+        const pendingBadge = document.getElementById('pending-badge');
+        const preparingBadge = document.getElementById('preparing-badge');
+        const readyBadge = document.getElementById('ready-badge');
 
         // Kitchen DOM Elements
         const kitchenTabs = document.querySelectorAll('#kitchen .admin-tab');
@@ -1804,6 +1863,7 @@
             updateStats();
             loadOrderHistory();
             setupKitchenListeners();
+            setupRealTimeListeners();
         });
 
         // ==================== FIREBASE FUNCTIONS ====================
@@ -1883,6 +1943,7 @@
                 renderOrdersList();
                 renderKitchenOrders();
                 updateStats();
+                updateOrderBadges();
             } catch (error) {
                 console.error('Error loading orders:', error);
             }
@@ -1951,6 +2012,49 @@
             }
         }
 
+        // ==================== REAL-TIME LISTENERS ====================
+
+        function setupRealTimeListeners() {
+            // Listen for new orders
+            db.collection('orders').onSnapshot((snapshot) => {
+                snapshot.docChanges().forEach((change) => {
+                    if (change.type === 'added') {
+                        const newOrder = { id: change.doc.id, ...change.doc.data() };
+                        
+                        // Show notification for new pending orders
+                        if (newOrder.status === 'pending') {
+                            showNotification('طلب جديد', `تم استلام طلب جديد #${newOrder.id}`, 'info');
+                            
+                            // Update kitchen badge
+                            updateOrderBadges();
+                            
+                            // Play notification sound for kitchen
+                            if (currentUser && currentUser.role === 'kitchen') {
+                                notificationSound.play().catch(e => console.log('Audio play failed:', e));
+                            }
+                        }
+                    }
+                    
+                    if (change.type === 'modified') {
+                        const updatedOrder = { id: change.doc.id, ...change.doc.data() };
+                        
+                        // Show notification for status changes
+                        if (updatedOrder.status === 'ready') {
+                            showNotification('طلب جاهز', `الطلب #${updatedOrder.id} جاهز للتقديم`, 'success');
+                        } else if (updatedOrder.status === 'completed') {
+                            showNotification('طلب مكتمل', `تم تسليم الطلب #${updatedOrder.id}`, 'success');
+                        }
+                        
+                        // Update badges
+                        updateOrderBadges();
+                    }
+                });
+                
+                // Reload orders list
+                loadOrders();
+            });
+        }
+
         // ==================== IMAGE UPLOAD WITH IMGBB ====================
 
         async function uploadImageToImgBB(file) {
@@ -1999,6 +2103,21 @@
                 });
             });
 
+            // Login Type Selector
+            adminLoginBtn.addEventListener('click', () => {
+                adminLoginBtn.classList.add('active');
+                kitchenLoginBtn.classList.remove('active');
+                otpSection.style.display = 'none';
+                loginSubmitBtn.textContent = 'تسجيل الدخول';
+            });
+
+            kitchenLoginBtn.addEventListener('click', () => {
+                kitchenLoginBtn.classList.add('active');
+                adminLoginBtn.classList.remove('active');
+                otpSection.style.display = 'none';
+                loginSubmitBtn.textContent = 'تسجيل الدخول';
+            });
+
             // Login
             loginBtn.addEventListener('click', () => {
                 if (currentUser) {
@@ -2024,33 +2143,38 @@
                 e.preventDefault();
                 const username = document.getElementById('login-username').value;
                 const password = document.getElementById('login-password').value;
+                const isKitchenLogin = kitchenLoginBtn.classList.contains('active');
                 
-                // Check for kitchen login
-                if (username === KITCHEN_CREDENTIALS.username && password === KITCHEN_CREDENTIALS.password) {
-                    handleKitchenLogin();
-                    return;
-                }
-                
-                // Check for admin login
-                if (username === LOGIN_CREDENTIALS.username && password === LOGIN_CREDENTIALS.password) {
-                    if (otpSection.style.display === 'none' || otpSection.style.display === '') {
-                        otpSection.style.display = 'block';
-                        loginSubmitBtn.textContent = 'تحقق من الرمز';
-                        loginOtpInput.focus();
-                        return;
-                    }
-                    
-                    const otp = loginOtpInput.value;
-                    if (otp === LOGIN_CREDENTIALS.otp) {
-                        handleSuccessfulLogin();
+                if (isKitchenLogin) {
+                    // Kitchen login
+                    if (username === KITCHEN_CREDENTIALS.username && password === KITCHEN_CREDENTIALS.password) {
+                        handleKitchenLogin();
                     } else {
-                        alert('رمز التحقق غير صحيح!');
-                        loginOtpInput.value = '';
-                        loginOtpInput.focus();
+                        alert('اسم المستخدم أو كلمة المرور غير صحيحة!');
+                        resetLoginForm();
                     }
                 } else {
-                    alert('اسم المستخدم أو كلمة المرور غير صحيحة!');
-                    resetLoginForm();
+                    // Admin login
+                    if (username === LOGIN_CREDENTIALS.username && password === LOGIN_CREDENTIALS.password) {
+                        if (otpSection.style.display === 'none' || otpSection.style.display === '') {
+                            otpSection.style.display = 'block';
+                            loginSubmitBtn.textContent = 'تحقق من الرمز';
+                            loginOtpInput.focus();
+                            return;
+                        }
+                        
+                        const otp = loginOtpInput.value;
+                        if (otp === LOGIN_CREDENTIALS.otp) {
+                            handleSuccessfulLogin();
+                        } else {
+                            alert('رمز التحقق غير صحيح!');
+                            loginOtpInput.value = '';
+                            loginOtpInput.focus();
+                        }
+                    } else {
+                        alert('اسم المستخدم أو كلمة المرور غير صحيحة!');
+                        resetLoginForm();
+                    }
                 }
             });
 
@@ -2221,7 +2345,7 @@
             showPage('kitchen');
             
             setTimeout(() => {
-                alert('مرحباً بك في نظام المطبخ!');
+                showNotification('مرحباً', 'تم تسجيل الدخول إلى نظام المطبخ بنجاح', 'success');
             }, 500);
             
             resetLoginForm();
@@ -2230,7 +2354,7 @@
         function handleSuccessfulLogin() {
             currentUser = { 
                 uid: 'admin', 
-                displayName: 'حسن',
+                displayName: 'مدير النظام',
                 loginTime: new Date(),
                 role: 'admin'
             };
@@ -2241,7 +2365,7 @@
             showPage('admin');
             
             setTimeout(() => {
-                alert('مرحباً بك ' + currentUser.displayName + '! تم تسجيل الدخول بنجاح.');
+                showNotification('مرحباً', 'تم تسجيل الدخول إلى لوحة الإدارة بنجاح', 'success');
             }, 500);
             
             resetLoginForm();
@@ -2253,6 +2377,8 @@
             loginOtpInput.value = '';
             otpSection.style.display = 'none';
             loginSubmitBtn.textContent = 'تسجيل الدخول';
+            adminLoginBtn.classList.add('active');
+            kitchenLoginBtn.classList.remove('active');
         }
 
         function showPage(pageId) {
@@ -2268,8 +2394,8 @@
             }
             
             if (pageId === 'kitchen' && currentUser && currentUser.role === 'admin') {
-                alert('يجب تسجيل الدخول بحساب المطبخ للوصول إلى هذه الصفحة');
-                return;
+                // Allow admin to access kitchen page for monitoring
+                // showNotification('ملاحظة', 'أنت الآن في وضع مراقبة المطبخ', 'info');
             }
             
             pages.forEach(page => {
@@ -2303,12 +2429,32 @@
             notification.classList.add('show');
             
             // Play notification sound
-            notificationSound.play().catch(e => console.log('Audio play failed:', e));
+            if (type === 'info' || type === 'warning') {
+                notificationSound.play().catch(e => console.log('Audio play failed:', e));
+            }
             
             // Hide notification after 5 seconds
             setTimeout(() => {
                 notification.classList.remove('show');
             }, 5000);
+        }
+
+        // ==================== ORDER BADGES ====================
+
+        function updateOrderBadges() {
+            const pendingOrders = orders.filter(order => order.status === 'pending').length;
+            const preparingOrders = orders.filter(order => order.status === 'preparing').length;
+            const readyOrders = orders.filter(order => order.status === 'ready').length;
+            const totalKitchenOrders = pendingOrders + preparingOrders + readyOrders;
+            
+            // Update kitchen badge in navigation
+            kitchenBadge.textContent = totalKitchenOrders;
+            kitchenBadge.style.display = totalKitchenOrders > 0 ? 'flex' : 'none';
+            
+            // Update kitchen page badges
+            pendingBadge.textContent = pendingOrders;
+            preparingBadge.textContent = preparingOrders;
+            readyBadge.textContent = readyOrders;
         }
 
         // ==================== MENU ITEMS MANAGEMENT ====================
@@ -2544,7 +2690,6 @@
                 document.getElementById('employee-position').value = employee.position;
                 document.getElementById('employee-salary').value = employee.salary;
                 document.getElementById('employee-phone').value = employee.phone || '';
-                document.getElementById('employee-email').value = employee.email || '';
                 
                 if (employee.photo) {
                     employeePhotoPreview.innerHTML = `<img src="${employee.photo}" alt="صورة الموظف">`;
@@ -2572,7 +2717,6 @@
             const position = document.getElementById('employee-position').value;
             const salary = parseFloat(document.getElementById('employee-salary').value);
             const phone = document.getElementById('employee-phone').value;
-            const email = document.getElementById('employee-email').value;
             
             if (!name || !position || !salary) {
                 alert('يرجى ملء جميع الحقول المطلوبة!');
@@ -2595,7 +2739,6 @@
                     position,
                     salary,
                     phone,
-                    email,
                     photo: photoUrl,
                     createdAt: new Date(),
                     updatedAt: new Date()
@@ -2624,7 +2767,6 @@
             const position = document.getElementById('employee-position').value;
             const salary = parseFloat(document.getElementById('employee-salary').value);
             const phone = document.getElementById('employee-phone').value;
-            const email = document.getElementById('employee-email').value;
             const employeeId = editEmployeeId.value;
             
             if (!name || !position || !salary || !employeeId) {
@@ -2641,7 +2783,6 @@
                     position,
                     salary,
                     phone,
-                    email,
                     updatedAt: new Date()
                 };
                 
@@ -2809,6 +2950,7 @@
                         <div class="employee-name">${employee.name}</div>
                         <div class="employee-position">${employee.position}</div>
                         <div class="employee-salary">${employee.salary} ${restaurantConfig.settings.currency}</div>
+                        ${employee.phone ? `<div class="employee-phone">${employee.phone}</div>` : ''}
                     </div>
                     <div class="action-buttons">
                         <button class="btn btn-edit edit-employee" data-id="${employee.id}">
@@ -2986,7 +3128,7 @@
                 receiptModal.classList.add('active');
                 
                 // إرسال إشعار للمطبخ
-                showNotification('طلب جديد', 'تم استلام طلب جديد للمطبخ', 'warning');
+                showNotification('طلب جديد', `تم استلام طلب جديد #${order.id}`, 'info');
                 
                 updateStats();
                 loadOrderHistory();
@@ -3069,7 +3211,7 @@
                                 <div class="cart-item-name">طلب ${order.id}</div>
                                 <div class="cart-item-price">${order.total.toFixed(2)} ${restaurantConfig.settings.currency}</div>
                                 <small>${new Date(order.createdAt).toLocaleString('ar-SA')}</small>
-                                <div class="order-status status-${order.status}">${getStatusText(order.status)}</div>
+                                <div class="order-status ${getStatusClass(order.status)}">${getStatusText(order.status)}</div>
                             </div>
                             ${order.status !== 'completed' ? `
                                 <div class="action-buttons">
@@ -3159,6 +3301,9 @@
             renderKitchenOrderList(pendingOrdersList, pendingOrders, 'pending');
             renderKitchenOrderList(preparingOrdersList, preparingOrders, 'preparing');
             renderKitchenOrderList(readyOrdersList, readyOrders, 'ready');
+            
+            // Update badges
+            updateOrderBadges();
         }
 
         function renderKitchenOrderList(container, orders, status) {
@@ -3538,7 +3683,7 @@
                 categories.push(newCategory);
                 updateCategories();
                 newCategoryInput.value = '';
-                alert('تم إضافة التصنيف بنجاح!');
+                showNotification('نجاح', 'تم إضافة التصنيف بنجاح!');
             }
         }
 
