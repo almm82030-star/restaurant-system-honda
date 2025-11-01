@@ -1717,6 +1717,22 @@
         const db = firebase.firestore();
         const auth = firebase.auth();
 
+        // بيانات الدخول
+        const LOGIN_CREDENTIALS = {
+            admin: {
+                username: "admin",
+                password: "admin123",
+                otp: "1234"
+            },
+            kitchen: {
+                username: "kitchen",
+                password: "kitchen123"
+            }
+        };
+
+        // مفتاح API لـ imgBB
+        const IMGBB_API_KEY = '688477478b00303ff7023a3cb80f0943';
+
         // Application State
         let currentUser = null;
         let menuItems = [];
@@ -1747,22 +1763,6 @@
                 timezone: "Asia/Riyadh"
             }
         };
-
-        // بيانات الدخول المخفية
-        const LOGIN_CREDENTIALS = {
-            username: "admin",
-            password: "admin123",
-            otp: "1234"
-        };
-
-        // بيانات دخول المطبخ
-        const KITCHEN_CREDENTIALS = {
-            username: "kitchen",
-            password: "kitchen123"
-        };
-
-        // مفتاح API لـ imgBB
-        const IMGBB_API_KEY = '688477478b00303ff7023a3cb80f0943';
 
         // DOM Elements
         const pages = document.querySelectorAll('.page');
@@ -2147,7 +2147,7 @@
                 
                 if (isKitchenLogin) {
                     // Kitchen login
-                    if (username === KITCHEN_CREDENTIALS.username && password === KITCHEN_CREDENTIALS.password) {
+                    if (username === LOGIN_CREDENTIALS.kitchen.username && password === LOGIN_CREDENTIALS.kitchen.password) {
                         handleKitchenLogin();
                     } else {
                         alert('اسم المستخدم أو كلمة المرور غير صحيحة!');
@@ -2155,7 +2155,7 @@
                     }
                 } else {
                     // Admin login
-                    if (username === LOGIN_CREDENTIALS.username && password === LOGIN_CREDENTIALS.password) {
+                    if (username === LOGIN_CREDENTIALS.admin.username && password === LOGIN_CREDENTIALS.admin.password) {
                         if (otpSection.style.display === 'none' || otpSection.style.display === '') {
                             otpSection.style.display = 'block';
                             loginSubmitBtn.textContent = 'تحقق من الرمز';
@@ -2164,7 +2164,7 @@
                         }
                         
                         const otp = loginOtpInput.value;
-                        if (otp === LOGIN_CREDENTIALS.otp) {
+                        if (otp === LOGIN_CREDENTIALS.admin.otp) {
                             handleSuccessfulLogin();
                         } else {
                             alert('رمز التحقق غير صحيح!');
@@ -2181,7 +2181,7 @@
             loginOtpInput.addEventListener('input', (e) => {
                 if (e.target.value.length === 4) {
                     const otp = e.target.value;
-                    if (otp === LOGIN_CREDENTIALS.otp) {
+                    if (otp === LOGIN_CREDENTIALS.admin.otp) {
                         handleSuccessfulLogin();
                     } else {
                         alert('رمز التحقق غير صحيح!');
